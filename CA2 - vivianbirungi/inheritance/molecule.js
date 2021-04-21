@@ -1,21 +1,23 @@
-//molecule class to generate an object
-//inside the molecule class we have a constructor with different properties
-//every object will have these properties
+//molecule object to generate with attributes
+//inside the molecule class we have a constructor with default parameters within an object
+//the default parameters will be passed to the child class but can still be overwritten.
 class Molecule {
-  constructor(_i, _x, _y, _r,_status) {
-    this.position = createVector(200, 200);
-    //  this.position = createVector(_x,_y);
-    this.velocity = createVector(random(-2.5, 2.5), random(-2.5, 2.5));
-    //    this.velocity = createVector(random(1), random(1));
-    this.radius = random(obj.minMoleculeSize, obj.maxMoleculeSize);
-    //  this.radius = _r;
-    this.color = color(0, 0, 255);
-    this.intersectingColor = color(0, 0, 100);
-    this.currentColor = this.color
+  constructor({
+    i,
+    vx = random(-2.5,2.5),
+    vy = random (-2.5,2.5),
+    px = random(0, width),
+    py = random(0, height)
+  }) {
+    this.index = i;
+    this.radius = 30;
+    this.velocity = createVector(vx, vy);
+    this.position = createVector(px, py);
+  //  this.status = "Neutral";
 
-    this.index = _i;
-
-    this.status = "Neutral";
+    this.color = color(0,0,255);
+  //  this.intersectingColor = color(0,0,100);
+  //  this.currentColor = this.color;
   }
 
   //render function is where we define the shape, colour and text showing on our objetcs
@@ -26,7 +28,7 @@ class Molecule {
   //we define the text size and have the text aligned in the center.
   render() {
     noStroke()
-    fill(this.currentColor);
+    fill(this.color);
     ellipse(this.position.x, this.position.y, this.radius * 2, this.radius * 2);
     fill(0);
     (obj.showText) ? (
@@ -115,23 +117,21 @@ class Molecule {
 
   }
 
-  infect(_otherMolecule){
-    let newMolecule = new Infected(_otherMolecule.index, _otherMolecule.position.x, _otherMolecule.position.y,_otherMolecule.velocity.x,_otherMolecule.velocity.y);
-    molecules.splice(_otherMolecule.index,1,newMolecule);
-    console.log(molecules);
-  }
-
-
+  // infect(_otherMolecule){
+  //   let newMolecule = new Infected(_otherMolecule.index, _otherMolecule.position.x, _otherMolecule.position.y,_otherMolecule.velocity.x,_otherMolecule.velocity.y);
+  //   molecules.splice(_otherMolecule.index,1,newMolecule);
+  //   console.log(molecules);
+  // }
 
   //function to change colour when molecules intersect
-  changeColor() {
-    this.currentColor = this.intersectingColor;
-  }
+  // changeColor() {
+  //   this.currentColor = this.intersectingColor;
+  // }
 
   //function to reset the molecules to the original colour
-  reset() {
-    this.currentColor = this.color;
-  }
+  // reset() {
+  //   this.currentColor = this.color;
+  // }
 
   //function to move the object position and work out conditions for bouncing the Molecules
   //once they reach the extent of the window
@@ -146,4 +146,5 @@ class Molecule {
     this.position.x += this.velocity.x;
     this.position.y += this.velocity.y;
   }
+
 }

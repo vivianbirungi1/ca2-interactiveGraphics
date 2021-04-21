@@ -7,6 +7,7 @@ let checkNum = 0;
 let percentageOfInfected = 0.5;
 
 
+
 //in the setup we are defining the default values.
 //we create the canvas which will be 900 width and 900 height
 //we assign the colWidth and rowHeight to be equal to width and height divided by nummber of rows and col
@@ -19,28 +20,24 @@ function setup() {
     rowHeight = height / obj.numRows;
     molecules = [];
 
-    // for (let i = 0; i < obj.numOfMolecules; i++) {
-    //     molecules.push(new Healthy(i));
-    // }
 
-    // for (let i = 0; i < obj.numOfMolecules; i++) {
-    //     molecules.push(new Infected(i));
-    // }
-
-    // for (let i = 0; i < obj.numOfMolecules; i++) {
-    //     molecules.push(new Molecule(i));
-    // }
 
     for (let i=0; i <obj.numOfMolecules; i++){
       let randomNum = random();
       if(randomNum < percentageOfInfected){
-        molecules.push(new Infected(i));
+        molecules.push(new Infected({
+          i: i
+        }));
       }else{
-        molecules.push(new Healthy(i));
+        molecules.push(new Healthy({
+          i: i
+        }));
       }
 
 
     }
+
+    console.log(molecules);
 
 
 
@@ -58,9 +55,9 @@ function draw() {
 
     background(255);
 
-    molecules.forEach((molecule) => {
-        molecule.reset();
-    });
+    // molecules.forEach((molecule) => {
+    //     molecule.reset();
+    // });
 
     splitObjectIntoGrid();
   //  checkIntersectionsOld();
@@ -88,7 +85,6 @@ function draw() {
 //if they are not intersecting they remain the default colour.
 function checkIntersections(_collection) {
 
-
     for (let a = 0; a < _collection.length; a++) {
         for (let b = a + 1; b < _collection.length; b++) {
             let moleculeA = molecules[_collection[a]];
@@ -97,12 +93,56 @@ function checkIntersections(_collection) {
                 stroke(125, 100);
                 line(moleculeA.position.x, moleculeA.position.y, moleculeB.position.x, moleculeB.position.y);
             };
-            moleculeA.isIntersecting(moleculeB) ? (moleculeA.changeColor(), moleculeB.changeColor(), moleculeA.infect(moleculeB)) : null;
+            // moleculeA.isIntersecting(moleculeB) ? (moleculeA.changeColor(), moleculeB.changeColor(), moleculeA.infect(moleculeB)) : null;
+
+            if (moleculeA.isIntersecting(moleculeB)){
+
+              //assigning tempObj to the value of new Infected molecule created
+              //if on m is infected and other is h, and randomNum is less than 0.1 which is infection rate,
+              // give the values of the healthy object to a new infected object and assign that object to that index.
+              if(moleculeA.constructor.name == "Infected" && moleculeB.constructor.name == "Healthy") {
+                let randomNum = random();
+                if(randomNum < 0.1) {
+                  let tempObj = new Infected({
+                    i: moleculeB.index,
+                    px: moleculeB.position.x,
+                    py: moleculeB.position.y,
+                    vx: moleculeB.velocity.x,
+                    vy: moleculeB.velocity.y
+                  });
+                  console.log(tempObj);
+
+                  molecules[moleculeB.index] = tempObj; //assigning tempObj to the specified index in the molecules array.
+                }
+              }
+              else if (moleculeB.constructor.name == "Infected" && moleculeA.constructor.name == "Healthy") {
+                let randomNum = random();
+                if(randomNum < 1){
+                  let tempObj = new Infected({
+                    i: moleculeA.index,
+                    px: moleculeA.position.x,
+                    py: moleculeA.position.y,
+                    vx: moleculeA.velocity.x,
+                    vy: moleculeA.velocity.y
+                  });
+                  console.log(tempObj);
+
+                  molecules[moleculeA.index] = tempObj;
+                }
+
+
+              }
+
+            } //closing first if statement
         }
     }
 
 }
 
+// function recoveredMolecule() {
+//   //count++ count=5 //frameCount
+//
+// }
 
 //in this function we are populating the empty 3D array
 //we write a nested for loop that iterates through the i an j values.
