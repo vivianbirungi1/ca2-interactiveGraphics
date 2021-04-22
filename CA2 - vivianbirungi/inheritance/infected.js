@@ -17,7 +17,17 @@ class Infected extends Molecule {
     this.color = color(255,0,0);
     this.status = "Isolate!";
 
-    this.lifespan = 500;
+  //  this.infectedForAWeek = 300;
     this.age = frameCount;
+  }
+
+//pulsing 
+  render(){
+    noFill();
+    stroke(this.color);
+    angleMode(DEGREES);
+    strokeWeight(3);
+    let diam = map(Math.sin(frameCount), -1,1,70,140);
+    ellipse(this.position.x,this.position.y,diam,diam);
   }
 }

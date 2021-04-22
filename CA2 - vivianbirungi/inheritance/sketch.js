@@ -1,3 +1,6 @@
+//Covid research
+
+
 // here we create the empty arrays molecules and grid
 //and initialise varaible colWidth and rowHeight
 let molecules = [];
@@ -5,12 +8,16 @@ let grid = [];
 let colWidth, rowHeight;
 let checkNum = 0;
 let percentageOfInfected = 0.5;
-let percentageIll = 0.2;
+//let percentageIll = 0.2;
 let graphHeight = 150;
 let graphArray = [];
 let healthyNum;
 let infectedNum;
 let recoveredNum;
+let criticalNum;
+let infectedForAWeek = 370;
+let infectedForTwoWeeks = 743;
+let infectedForThreeWeeks = 1112;
 
 
 
@@ -29,8 +36,8 @@ function setup() {
 
 
     for (let i=0; i <obj.numOfMolecules; i++){
-      let randomNum = random();
-      if(randomNum < percentageOfInfected){
+    //  let randomNum = random();
+      if(i < percentageOfInfected * obj.numOfMolecules){ //creating as many molecules as number of molecules we want to be infected
         molecules.push(new Infected({
           i: i
         }));
@@ -81,7 +88,7 @@ function draw() {
 
     drawGraph();
     recoveredMolecule();
-  //  deadMolecule();
+    deadMolecule();
   //  criticallyIll();
     drawText();
 
@@ -134,7 +141,7 @@ function checkIntersections(_collection) {
               }
               else if (moleculeB.constructor.name == "Infected" && moleculeA.constructor.name == "Healthy") {
                 let randomNum = random();
-                if(randomNum < 0.1){
+                if(randomNum < 0.1){ //percentage of B that will get infected
                   let tempObj = new Infected({
                     i: moleculeA.index,
                     px: moleculeA.position.x,
@@ -147,7 +154,8 @@ function checkIntersections(_collection) {
                   molecules[moleculeA.index] = tempObj;
                 }
 
-                if(randomNum < 0.01){
+                //once its infected, has a chance of becoming critically infected
+                if(randomNum < 0.1){ //percentage that will go critical
                   let tempObj = new Critical({
                     i: moleculeA.index,
                     px: moleculeA.position.x,
@@ -158,23 +166,8 @@ function checkIntersections(_collection) {
                   console.log(tempObj);
 
                   molecules[moleculeA.index] = tempObj;
-                  deadMolecule(molecules[moleculeA.index]);
-                  // if (frameCount > 500) {
-                  //   let randomNum = random();
-                  //   if(randomNum < 1){
-                  //     let tempObj2 = new Dead ({
-                  //       i: moleculeA.index,
-                  //       px: moleculeA.position.x,
-                  //       py: moleculeA.position.y,
-                  //       vx: moleculeA.velocity.x,
-                  //       vy: moleculeA.velocity.y
-                  //     });
-                  //
-                  //     console.log(tempObj);
-                  //     molecule[moleculeA.index] = tempObj2;
-                  //
-                  //   }
-                  // }
+                //  deadMolecule(molecules[moleculeA.index]); //calling deadMolecule function and passing in molecules array and index.
+
                 }
 
 
@@ -187,11 +180,19 @@ function checkIntersections(_collection) {
 
 }
 
+//checking each infected molecule's lifespan and age on when they spawn.
+//if frameCount is larger than age and length of infection.
+
 function recoveredMolecule() {
+//  console.log("I have begun")
   molecules.forEach((molecule) => {
-    if (frameCount > molecule.age + molecule.lifespan) {
+  //  console.log("I have begun")
+    if(molecule.constructor.name == "Infected"){
+       //console.log("fram count = " + frameCount)
+    if (frameCount > molecule.age + infectedForAWeek ) {
+    //  console.log("starting")
       let randomNum = random();
-      if(randomNum < 0.2){
+      if(randomNum < 0.4){ //percentage that will recover
         let tempObj = new Recovered ({
           i: molecule.index,
           px: molecule.position.x,
@@ -205,17 +206,11 @@ function recoveredMolecule() {
       }
 
 
-    }
-  });
+    } else if(frameCount > molecule.age + infectedForTwoWeeks){
 
-}
-
-function deadMolecule(molecule) {
-
-    if (frameCount > (molecule.count + molecule.timeSick)) {
       let randomNum = random();
-      if(randomNum < 1){
-        let tempObj = new Dead ({
+      if(randomNum < 0.1){ //percentage that will recover after two weeks
+        let tempObj = new Recovered ({
           i: molecule.index,
           px: molecule.position.x,
           py: molecule.position.y,
@@ -224,42 +219,76 @@ function deadMolecule(molecule) {
         });
 
         console.log(tempObj);
-        molecule[molecule.index] = tempObj;
-
+        molecules[molecule.index] = tempObj;
       }
+
     }
+
+  //   else if (molecule.constructor.name == "Critical"){
+  //      if(frameCount > molecule.age + infectedForThreeWeeks){
+  //     let randomNum = random();
+  //     console.log(molecule)
+  //     if(random < 1){
+  //       //deadMolecule(molecule);
+  //
+  //       let tempObj = new Dead ({
+  //         i: molecule.index,
+  //         px: molecule.position.x,
+  //         py: molecule.position.y,
+  //         vx: molecule.velocity.x,
+  //         vy: molecule.velocity.y
+  //       });
+  //
+  //       console.log(tempObj);
+  //       molecule[molecule.index] = tempObj;
+  //     }
+  //   }
+  // }
+}
+  });
+
 }
 
-// function criticallyIll() {
-//   molecules.forEach((molecule) => {
-//     if (frameCount > molecule.count + molecule.timeSick) {
-//       let randomNum = random();
-//       if(randomNum < 1){
-//         let tempObj = new Critical ({
-//           i: molecule.index,
-//           px: molecule.position.x,
-//           py: molecule.position.y,
-//           vx: molecule.velocity.x,
-//           vy: molecule.velocity.y
-//         });
-//
-//         console.log(tempObj);
-//         molecule[molecule.index] = tempObj;
-//
-//       }
-//     }
-//   });
-// }
+
+function deadMolecule(molecule) {
+  //console.log(molecule)
+  molecules.forEach((molecule) => {
+
+    if(molecule.constructor.name == "Critical"){
+
+      if(frameCount > molecule.age + infectedForThreeWeeks){
+
+        let randomNum = randomNum();
+        if(randomNum < 0.1){
+          let tempObj = new Dead ({
+            i: molecule.index,
+            px: molecule.position.x,
+            py: molecule.position.y,
+            vx: molecule.velocity.x,
+            vy: molecule.velocity.y
+          });
+          console.log(tempObj);
+          molecules[molecule.index] = tempObj;
+        }
+      }
+    }
+
+  });
+
+} //end of deadMolecule
+
 
 function drawGraph() {
 
   let numInfected = molecules.filter(molecule => molecule.constructor.name == "Infected")
   let numHealthy = molecules.filter(molecule => molecule.constructor.name == "Healthy")
   let numRecovered = molecules.filter(molecule => molecule.constructor.name == "Recovered")
+  let numCritical = molecules.filter(molecule => molecule.constructor.name == "Critical")
 
   iHeight = map(numInfected.length, 0, obj.numOfMolecules, 0, graphHeight);
   hHeight = map(numHealthy.length, 0, obj.numOfMolecules, 0, graphHeight);
   lHeight = map(numRecovered.length, 0, obj.numOfMolecules, 0, graphHeight);
+  cHeight = map(numCritical.length, 0, obj.numOfMolecules, 0, graphHeight);
 
   if (graphArray.length >= 300) {
     graphArray.shift();
@@ -269,9 +298,11 @@ function drawGraph() {
     numInfected: numInfected.length,
     numHealthy: numHealthy.length,
     numRecovered: numRecovered.length,
+    numCritical: numCritical.length,
     iHeight: iHeight,
     hHeight: hHeight,
-    lHeight: lHeight
+    lHeight: lHeight,
+    cHeight: cHeight
   })
 
   push();
@@ -287,6 +318,9 @@ function drawGraph() {
 
     fill(255, 255, 0);
     rect(index, -data.hHeight, 1, -data.lHeight)
+
+    fill(255, 0, 208);
+    rect(index, -data.hHeight, 1, -data.cHeight)
   })
   pop();
 
@@ -299,6 +333,7 @@ function drawText(){
 infectedNum = 0;
 healthyNum = 0;
 recoveredNum = 0;
+criticalNum = 0;
 
   for(let i=0; i< obj.numOfMolecules; i++){
     if(molecules[i].constructor.name == "Infected"){
@@ -311,19 +346,24 @@ recoveredNum = 0;
     if(molecules[i].constructor.name == "Recovered"){
       recoveredNum++;
     }
+    if(molecules[i].constructor.name == "Critical"){
+      criticalNum++;
+    }
   }
 
   //height
   iHeight = map(infectedNum, 0, obj.numOfMolecules, 0, graphHeight);
   hHeight = map(healthyNum, 0, obj.numOfMolecules, 0, graphHeight);
   lHeight = map(recoveredNum, 0, obj.numOfMolecules, 0, graphHeight);
+  cHeight = map(criticalNum, 0, obj.numOfMolecules, 0, graphHeight);
 
   //text display.
   textAlign(LEFT);
   textSize(20);
-  text("Infected: " + infectedNum, 20, 900)
-  text("Healthy: " + healthyNum, 20, 950)
-  text("Recovered: " + recoveredNum, 20, 1000)
+  text("Infected: " + infectedNum, 20, 850)
+  text("Healthy: " + healthyNum, 20, 900)
+  text("Recovered: " + recoveredNum, 20, 950)
+  text("Critical: " + criticalNum, 20, 1000)
 
   //actual length of the graph. only going as far as 500 (half the canvas)
   if (graphArray.length >= 500){
@@ -335,33 +375,12 @@ recoveredNum = 0;
     infectedNum: infectedNum,
     healthyNum: healthyNum,
     recoveredNum: recoveredNum,
+    criticalNum: criticalNum,
     iHeight: iHeight,
     hHeight: hHeight,
-    lHeight: lHeight
+    lHeight: lHeight,
+    cHeight: cHeight
   })
-
-  // push();
-  // translate(250,1000);
-  //
-  // graphArray.forEach(function(data, index) {
-  //
-  //     //setting the colour and shape of the graph
-  //     noStroke();
-  //     fill(255, 0, 0)
-  //     rect(index, 0, 1, -data.iHeight)
-  //
-  //
-  //
-  //     fill(43, 43, 43);
-  //     rect(index, -data.iHeight, 1, -data.hHeight)
-  //
-  //
-  //
-  //     fill(184, 184, 184);
-  //     rect(index, -data.iHeight - data.hHeight, 1, -data.lHeight)
-  //
-  //   })
-  //   pop();
 
 
 
@@ -412,7 +431,9 @@ function gridify() {
         molecule.position.y = rowPos + (obj.minMoleculeSize) * 2;
 
     });
-}
+} //end of gridify
+
+
 
 // The function drawGrid draws a grid using a nested loop iterating columns(i)
 // within rows(j). colWidth and rowWidth are calculated in the setup(). The style
