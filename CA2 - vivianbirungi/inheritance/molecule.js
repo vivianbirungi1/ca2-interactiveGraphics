@@ -10,7 +10,7 @@ class Molecule {
     py = random(0, height)
   }) {
     this.index = i;
-    this.radius = 30;
+    this.radius = 20;
     this.velocity = createVector(vx, vy);
     this.position = createVector(px, py);
   //  this.status = "Neutral";
@@ -99,7 +99,7 @@ class Molecule {
     let rHeading = resultantV.heading();
 
     //calculating the magnitude of the resultant vector and taking away the radius of the two vectors and dividing by 2
-    let rDist = (resultantV.mag() - this.radius - fixedBall.radius) / 2;
+    let rDist = (resultantV.mag() - this.radius - fixedBall.radius);
 
     // Here we take away the calculated distance from the current position
     //angle we want the balls to move in - get the direction we want them to go in
@@ -140,7 +140,7 @@ class Molecule {
     (this.position.x > width - this.radius || this.position.x < 0 + this.radius) ?
     this.velocity.x *= -1: null;
 
-    (this.position.y > height - this.radius || this.position.y < 0 + this.radius) ?
+    (this.position.y > height - this.radius - graphHeight || this.position.y < 0 + this.radius) ?
     this.velocity.y *= -1: null;
 
     this.position.x += this.velocity.x;

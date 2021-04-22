@@ -3,7 +3,7 @@
 //when we want to call these variables we use obj before the name e.g obj.numOfMolecules
 //in our browser the user is able to manipilate and change these values.
 let obj = {
-    numOfMolecules: 20
+    numOfMolecules: 60
     , numRows: 1
     , numCols: 1
     , showText: false

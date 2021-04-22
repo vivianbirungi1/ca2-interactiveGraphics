@@ -15,8 +15,9 @@ class Infected extends Molecule {
     });
 
     this.color = color(255,0,0);
-  //  this.intersectingColor = color(100,0,0);
+    this.status = "Isolate!";
 
-      this.status = "Isolate!";
+    this.lifespan = 500;
+    this.age = frameCount;
   }
 }

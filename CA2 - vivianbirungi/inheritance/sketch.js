@@ -5,6 +5,12 @@ let grid = [];
 let colWidth, rowHeight;
 let checkNum = 0;
 let percentageOfInfected = 0.5;
+let percentageIll = 0.2;
+let graphHeight = 150;
+let graphArray = [];
+let healthyNum;
+let infectedNum;
+let recoveredNum;
 
 
 
@@ -33,11 +39,14 @@ function setup() {
           i: i
         }));
       }
-
-
+      // if(randomNum > 6 && i < 12){
+      //   molecules.push(new Critical({
+      //     i: i
+      //   }));
+      // }
     }
 
-    console.log(molecules);
+  //  console.log(molecules);
 
 
 
@@ -70,6 +79,12 @@ function draw() {
 
     //console.log(frameRate());
 
+    drawGraph();
+    recoveredMolecule();
+  //  deadMolecule();
+  //  criticallyIll();
+    drawText();
+
 }
 
 
@@ -98,7 +113,7 @@ function checkIntersections(_collection) {
             if (moleculeA.isIntersecting(moleculeB)){
 
               //assigning tempObj to the value of new Infected molecule created
-              //if on m is infected and other is h, and randomNum is less than 0.1 which is infection rate,
+              //if a molecule is infected and other is healthy, and randomNum is less than 0.1 which is infection rate,
               // give the values of the healthy object to a new infected object and assign that object to that index.
               if(moleculeA.constructor.name == "Infected" && moleculeB.constructor.name == "Healthy") {
                 let randomNum = random();
@@ -114,10 +129,12 @@ function checkIntersections(_collection) {
 
                   molecules[moleculeB.index] = tempObj; //assigning tempObj to the specified index in the molecules array.
                 }
+
+
               }
               else if (moleculeB.constructor.name == "Infected" && moleculeA.constructor.name == "Healthy") {
                 let randomNum = random();
-                if(randomNum < 1){
+                if(randomNum < 0.1){
                   let tempObj = new Infected({
                     i: moleculeA.index,
                     px: moleculeA.position.x,
@@ -130,6 +147,37 @@ function checkIntersections(_collection) {
                   molecules[moleculeA.index] = tempObj;
                 }
 
+                if(randomNum < 0.01){
+                  let tempObj = new Critical({
+                    i: moleculeA.index,
+                    px: moleculeA.position.x,
+                    py: moleculeA.position.y,
+                    vx: moleculeA.velocity.x,
+                    vy: moleculeA.velocity.y
+                  });
+                  console.log(tempObj);
+
+                  molecules[moleculeA.index] = tempObj;
+                  deadMolecule(molecules[moleculeA.index]);
+                  // if (frameCount > 500) {
+                  //   let randomNum = random();
+                  //   if(randomNum < 1){
+                  //     let tempObj2 = new Dead ({
+                  //       i: moleculeA.index,
+                  //       px: moleculeA.position.x,
+                  //       py: moleculeA.position.y,
+                  //       vx: moleculeA.velocity.x,
+                  //       vy: moleculeA.velocity.y
+                  //     });
+                  //
+                  //     console.log(tempObj);
+                  //     molecule[moleculeA.index] = tempObj2;
+                  //
+                  //   }
+                  // }
+                }
+
+
 
               }
 
@@ -139,10 +187,185 @@ function checkIntersections(_collection) {
 
 }
 
-// function recoveredMolecule() {
-//   //count++ count=5 //frameCount
+function recoveredMolecule() {
+  molecules.forEach((molecule) => {
+    if (frameCount > molecule.age + molecule.lifespan) {
+      let randomNum = random();
+      if(randomNum < 0.2){
+        let tempObj = new Recovered ({
+          i: molecule.index,
+          px: molecule.position.x,
+          py: molecule.position.y,
+          vx: molecule.velocity.x,
+          vy: molecule.velocity.y
+        });
+
+        console.log(tempObj);
+        molecules[molecule.index] = tempObj;
+      }
+
+
+    }
+  });
+
+}
+
+function deadMolecule(molecule) {
+
+    if (frameCount > (molecule.count + molecule.timeSick)) {
+      let randomNum = random();
+      if(randomNum < 1){
+        let tempObj = new Dead ({
+          i: molecule.index,
+          px: molecule.position.x,
+          py: molecule.position.y,
+          vx: molecule.velocity.x,
+          vy: molecule.velocity.y
+        });
+
+        console.log(tempObj);
+        molecule[molecule.index] = tempObj;
+
+      }
+    }
+}
+
+// function criticallyIll() {
+//   molecules.forEach((molecule) => {
+//     if (frameCount > molecule.count + molecule.timeSick) {
+//       let randomNum = random();
+//       if(randomNum < 1){
+//         let tempObj = new Critical ({
+//           i: molecule.index,
+//           px: molecule.position.x,
+//           py: molecule.position.y,
+//           vx: molecule.velocity.x,
+//           vy: molecule.velocity.y
+//         });
 //
+//         console.log(tempObj);
+//         molecule[molecule.index] = tempObj;
+//
+//       }
+//     }
+//   });
 // }
+
+function drawGraph() {
+
+  let numInfected = molecules.filter(molecule => molecule.constructor.name == "Infected")
+  let numHealthy = molecules.filter(molecule => molecule.constructor.name == "Healthy")
+  let numRecovered = molecules.filter(molecule => molecule.constructor.name == "Recovered")
+
+  iHeight = map(numInfected.length, 0, obj.numOfMolecules, 0, graphHeight);
+  hHeight = map(numHealthy.length, 0, obj.numOfMolecules, 0, graphHeight);
+  lHeight = map(numRecovered.length, 0, obj.numOfMolecules, 0, graphHeight);
+
+  if (graphArray.length >= 300) {
+    graphArray.shift();
+  }
+
+  graphArray.push({
+    numInfected: numInfected.length,
+    numHealthy: numHealthy.length,
+    numRecovered: numRecovered.length,
+    iHeight: iHeight,
+    hHeight: hHeight,
+    lHeight: lHeight
+  })
+
+  push();
+  translate(350, 1000);
+  graphArray.forEach(function(data, index) {
+
+    noStroke()
+    fill(255,0,0)
+    rect(index, 0, 1, -data.iHeight)
+
+    fill(0, 255, 0);
+    rect(index, -data.iHeight, 1, -data.hHeight)
+
+    fill(255, 255, 0);
+    rect(index, -data.hHeight, 1, -data.lHeight)
+  })
+  pop();
+
+
+}
+
+//function to draw text on the screen to display the count of number of healthy, infected and recovered.
+function drawText(){
+
+infectedNum = 0;
+healthyNum = 0;
+recoveredNum = 0;
+
+  for(let i=0; i< obj.numOfMolecules; i++){
+    if(molecules[i].constructor.name == "Infected"){
+      infectedNum++;
+    }
+
+    if(molecules[i].constructor.name == "Healthy"){
+      healthyNum++;
+    }
+    if(molecules[i].constructor.name == "Recovered"){
+      recoveredNum++;
+    }
+  }
+
+  //height
+  iHeight = map(infectedNum, 0, obj.numOfMolecules, 0, graphHeight);
+  hHeight = map(healthyNum, 0, obj.numOfMolecules, 0, graphHeight);
+  lHeight = map(recoveredNum, 0, obj.numOfMolecules, 0, graphHeight);
+
+  //text display.
+  textAlign(LEFT);
+  textSize(20);
+  text("Infected: " + infectedNum, 20, 900)
+  text("Healthy: " + healthyNum, 20, 950)
+  text("Recovered: " + recoveredNum, 20, 1000)
+
+  //actual length of the graph. only going as far as 500 (half the canvas)
+  if (graphArray.length >= 500){
+    graphArray.shift(); //P5
+  }
+
+  //push into graphArray
+  graphArray.push({
+    infectedNum: infectedNum,
+    healthyNum: healthyNum,
+    recoveredNum: recoveredNum,
+    iHeight: iHeight,
+    hHeight: hHeight,
+    lHeight: lHeight
+  })
+
+  // push();
+  // translate(250,1000);
+  //
+  // graphArray.forEach(function(data, index) {
+  //
+  //     //setting the colour and shape of the graph
+  //     noStroke();
+  //     fill(255, 0, 0)
+  //     rect(index, 0, 1, -data.iHeight)
+  //
+  //
+  //
+  //     fill(43, 43, 43);
+  //     rect(index, -data.iHeight, 1, -data.hHeight)
+  //
+  //
+  //
+  //     fill(184, 184, 184);
+  //     rect(index, -data.iHeight - data.hHeight, 1, -data.lHeight)
+  //
+  //   })
+  //   pop();
+
+
+
+}
 
 //in this function we are populating the empty 3D array
 //we write a nested for loop that iterates through the i an j values.
@@ -178,7 +401,7 @@ function splitObjectIntoGrid() {
 //we define the molecule.pos.x and y positions of the molecules to equally space out the molecules in each cell.
 function gridify() {
     let numDivision = ceil(Math.sqrt(obj.numOfMolecules));
-    let spacing = (width - 40) / numDivision;
+    let spacing = (width - graphHeight) / numDivision; //taking away the graphHeight to not have the balls overlapping
 
     molecules.forEach((molecule, index) => {
 
