@@ -15,6 +15,7 @@ class Critical extends Molecule {
     });
 
     this.color = color(255, 0, 208);
+    this.age = frameCount;
 
   //  this.timeSick = 100;
   //  this.count = frameCount;

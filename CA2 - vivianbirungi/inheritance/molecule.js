@@ -16,8 +16,6 @@ class Molecule {
   //  this.status = "Neutral";
 
     this.color = color(0,0,255);
-  //  this.intersectingColor = color(0,0,100);
-  //  this.currentColor = this.color;
   }
 
   //render function is where we define the shape, colour and text showing on our objetcs
@@ -116,22 +114,6 @@ class Molecule {
     console.log(_otherMolecule)
 
   }
-
-  // infect(_otherMolecule){
-  //   let newMolecule = new Infected(_otherMolecule.index, _otherMolecule.position.x, _otherMolecule.position.y,_otherMolecule.velocity.x,_otherMolecule.velocity.y);
-  //   molecules.splice(_otherMolecule.index,1,newMolecule);
-  //   console.log(molecules);
-  // }
-
-  //function to change colour when molecules intersect
-  // changeColor() {
-  //   this.currentColor = this.intersectingColor;
-  // }
-
-  //function to reset the molecules to the original colour
-  // reset() {
-  //   this.currentColor = this.color;
-  // }
 
   //function to move the object position and work out conditions for bouncing the Molecules
   //once they reach the extent of the window

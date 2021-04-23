@@ -19,10 +19,13 @@ class Infected extends Molecule {
 
   //  this.infectedForAWeek = 300;
     this.age = frameCount;
+
+
   }
 
-//pulsing 
+//pulsing
   render(){
+    super.render();
     noFill();
     stroke(this.color);
     angleMode(DEGREES);
