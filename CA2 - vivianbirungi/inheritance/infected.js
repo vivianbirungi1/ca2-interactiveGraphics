@@ -1,3 +1,7 @@
+//infected child class extending parent molecule class
+//constructor where we create the instance of a class
+//default parameters are held within the instance of the class
+//child class can inherit the default parameters from the super class.
 class Infected extends Molecule {
   constructor({
     i,
@@ -14,23 +18,26 @@ class Infected extends Molecule {
       vy
     });
 
+    //setting the color of the molecult and status message
     this.color = color(255,0,0);
     this.status = "Isolate!";
 
-  //  this.infectedForAWeek = 300;
-    this.age = frameCount;
+    this.age = frameCount; //setting the age of molecule to the amount of frames
 
 
   }
 
-//pulsing
+//making pulsing red infected objects
+//overwriting the render function its inheriting from the super class
+//getting the math.sin of the frameCount and setting the size, position, and pulse rate
+//defining the ellipse noFill, stroke, position x and y and diameter.
   render(){
     super.render();
     noFill();
     stroke(this.color);
-    angleMode(DEGREES);
+    angleMode(DEGREES); //angleMode calculates angle Degrees
     strokeWeight(3);
-    let diam = map(Math.sin(frameCount), -1,1,70,140);
+    let diam = map(Math.sin(frameCount), -1,1,50,90);
     ellipse(this.position.x,this.position.y,diam,diam);
   }
 }

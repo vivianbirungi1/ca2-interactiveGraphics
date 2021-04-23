@@ -14,6 +14,7 @@ let obj = {
     , intersectingColor: [0, 255, 0]
     , minMoleculeSize: 20
     , maxMoleculeSize: 30
+    , infectionRate: 0.24
 };
 
 //declaring the gui variable and assigning it as a new GUI object.
@@ -41,6 +42,13 @@ section01.add(obj, 'numCols').min(1).max(20).step(1).onChange(function () {
     setup();
     draw();
 });
+
+//controlling the infection rate of the molecules
+section01.add(obj, 'infectionRate').min(0.24).max(1).step(1).onChange(function () {
+    setup();
+    draw();
+});
+
 section01.add(obj, 'showText').onChange(function () {
     draw()
 });

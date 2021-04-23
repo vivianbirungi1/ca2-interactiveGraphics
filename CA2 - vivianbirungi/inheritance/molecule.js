@@ -1,5 +1,6 @@
 //molecule object to generate with attributes
-//inside the molecule class we have a constructor with default parameters within an object
+//inside the molecule class we have a constructor to create an instance of a class
+//all default parameteres are held within this instance
 //the default parameters will be passed to the child class but can still be overwritten.
 class Molecule {
   constructor({
@@ -13,7 +14,6 @@ class Molecule {
     this.radius = 20;
     this.velocity = createVector(vx, vy);
     this.position = createVector(px, py);
-  //  this.status = "Neutral";
 
     this.color = color(0,0,255);
   }
@@ -35,23 +35,24 @@ class Molecule {
       text(this.index, this.position.x, this.position.y + 6)) : null;
   }
 
-  //this function we are checking the distance between the molecules to chek whether they are intersecting
+  //this function we are checking the distance between the molecules to check whether they are intersecting
   isIntersecting(_molecule) {
-    let distance = dist(this.position.x, this.position.y, _molecule.position.x, _molecule.position.y)
-    let gap = distance - this.radius - _molecule.radius;
-    let check = (gap <= 0) ? true : false;
+    let distance = dist(this.position.x, this.position.y, _molecule.position.x, _molecule.position.y) //calculcating the distance.
+    let gap = distance - this.radius - _molecule.radius; //calculating the gap.
+    let check = (gap <= 0) ? true : false; //chekcing if the gap between the balls is true or false. if true carry out the if check function below.
 
+
+    //molecules are checking each other for when they intersect
+    //if they are intersecting then carry out the dock function.
 
     //difference in x position dx
     //difference in y position dy
-    //using pythagroas by getting square root of dx squared
-    //and dy squared and getting the distance
     if (check) {
-      console.log(`We were in close contact with index: ${this.index}, i need to ${this.status}`);
+      console.log(`We were in close contact with index: ${this.index}, i need to ${this.status}`); //console logging when the molecules check each other.
 
       let dx = this.position.x - _molecule.position.x; //d = differentiation (the change over time)
       let dy = this.position.y - _molecule.position.y;
-      //  let dist = Math.sqrt(dx * dx + dy * dy);
+
 
       let normalX = dx / distance;
       let normalY = dy / distance;
@@ -71,15 +72,12 @@ class Molecule {
       _molecule.velocity.x += dvx;
       _molecule.velocity.y += dvy;
     }
-    //  console.log("bounce!");
 
     //if the balls intersect then carry out the dock function
     if (check) {
       this.dock(_molecule);
     }
     return check;
-
-
   }
 
   //this function is making the molecules dock when they collide rather than cluster
@@ -115,7 +113,7 @@ class Molecule {
 
   }
 
-  //function to move the object position and work out conditions for bouncing the Molecules
+  //function to move the objects position and work out conditions for bouncing the Molecules
   //once they reach the extent of the window
   step() {
 
@@ -123,7 +121,7 @@ class Molecule {
     this.velocity.x *= -1: null;
 
     (this.position.y > height - this.radius - graphHeight || this.position.y < 0 + this.radius) ?
-    this.velocity.y *= -1: null;
+    this.velocity.y *= -1: null; //taking away the graphHeight away from the y axis will create a boundary for the molecules to not cross
 
     this.position.x += this.velocity.x;
     this.position.y += this.velocity.y;

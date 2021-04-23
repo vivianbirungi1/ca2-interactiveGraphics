@@ -1,3 +1,7 @@
+//dead child class extending parent molecule class
+//constructor where we create the instance of a class
+//default parameters are held within the instance of the class
+//child class can inherit the default parameters from the super class.
 class Dead extends Molecule {
   constructor({
     i,
@@ -14,10 +18,9 @@ class Dead extends Molecule {
       vy
     });
 
+    //setting the color of the dead objecct
     this.color = color(0,0,0);
-  //  this.intersectingColor = color(100,100,0);
 
-      this.status = "uh-oh";
-      //this.timeSick = 100;
+
   }
 }
