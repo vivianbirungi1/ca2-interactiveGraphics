@@ -14,4 +14,5 @@ Most deaths from covid have been infected from two to six weeks therefore I chos
 Overall outcome to reflect the month of april, was to show a higher recovery to death ratio as the general statistics for Ireland, Shows there are a high number of cases but also a high number of recovered and a significantly low number of death in comparison to recovered. By the end function should display a high number of infected a very low number of dead.
 
 Screenshot example of running application:
+
 ![image](https://user-images.githubusercontent.com/48013221/156960675-f430339b-99b6-4b98-bbb8-fab2f0c63aba.png)
